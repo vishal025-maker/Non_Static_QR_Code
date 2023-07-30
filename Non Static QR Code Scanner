@@ -1,0 +1,58 @@
+import os
+import cv2
+import glob
+import pyqrcode
+from PIL import Image
+import qrcode
+from pyzbar.pyzbar import decode
+def nonstaticdecode(outputtextfile):
+ num=1
+ otf=outputtextfile
+ string1=" "
+ cam=cv2.VideoCapture(0)
+ fourcc=cv2.VideoWriter_fourcc(*'MJPG')
+ rec=cv2.VideoWriter('tutorial.MKV',fourcc,1,(640,480))
+ while True:
+     b,img1=cam.read()
+     cv2.imshow("viewpost",img1)
+     rec.write(img1)
+     key=cv2.waitKey(1)&0xFF
+     if key== ord('q'):
+         rec.release()
+         break
+ cam.release()
+ cv2.destroyAllWindows()
+
+ s=" "
+ videocap=cv2.VideoCapture("tutorial.MKV") #C:/Users/DELL/Desktop/qr/qrvideo.MKV
+ success, image=videocap.read()
+ count=0
+ file1=open(otf,"w")
+ while videocap.isOpened():
+
+     success, image = videocap.read()
+     if success is False :
+         break
+     cv2.imwrite( "C:/Users/DELL/Desktop/qr/QR/qr%d.png"%count,image)
+     img = cv2.imread("C:/Users/DELL/Desktop/qr/QR/qr" + str(count) + ".png")
+
+     rem_file = glob.glob("C:/Users/DELL/Desktop/qr/QR/qr%d.png" % count)
+     for i in rem_file:
+         os.remove(i)
+     for code in decode(img) :
+       #s = code.data
+       string1=str(code.data)
+
+       while (("b'"+str(num)) in string1):
+
+           val=string1.replace(("b'" + str(num)), "")
+
+           file1.write((" "+val))
+           num+=1
+           print(num)
+           print(string1)
+       #print(count," = ",s)
+       count+=1
+ file1.close()
+
+nonstaticdecode("file.txt")
