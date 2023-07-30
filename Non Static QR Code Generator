@@ -1,0 +1,45 @@
+import os
+import cv2
+import numpy as np
+import glob
+from skimage.metrics import structural_similarity
+import pyqrcode
+import vlc
+from PIL import Image
+import qrcode
+from pyzbar.pyzbar import decode
+
+flag=0
+qr=qrcode.QRCode(
+    version=6,
+    box_size=5,
+    border=5
+)
+count=0
+img1=[]
+file1=open('myfile.txt',"r")
+for i in file1:
+ count+=1
+ data=i
+ print(i)
+ qr.add_data(data)
+ qr.make(fit=True)
+ img=qr.make_image(fill="black",back_color="white")
+ img.save('C:/Users/DELL/Desktop/qr/img/text'+str(count)+'.png')
+
+
+ img1.append("C:/Users/DELL/Desktop/qr/img/text" +str(count)+'.png')
+ if count%18==0:
+  flag=1
+  cv2_fourcc=cv2.VideoWriter_fourcc(*'mp4v')
+  frame=cv2.imread(img1[count-1])
+
+  size=list(frame.shape)
+  del size[2]
+  size.reverse()
+  video=cv2.VideoWriter('C:/Users/DELL/Desktop/research/final2.mp4',cv2_fourcc,1,size)
+  for i in range(len(img1)):
+    video.write(cv2.imread(img1[i]))
+  video.release()
+  img1=[]
+  print(size)
